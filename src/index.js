@@ -19,6 +19,7 @@ app.post("/v1/api", async (req, res) => {
         console.log(`Received URL: ${url}`);
 
         const transcript = await getYouTubeTranscript(url);
+        
         if (!transcript) {
             return res.status(400).json({ error: "Unable to fetch transcript" });
         }
