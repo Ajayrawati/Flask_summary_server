@@ -21,21 +21,30 @@ export function extractYouTubeID(videoUrl) {
 
 // Function to fetch YouTube transcript
 export async function getYouTubeTranscript(youtubeUrl) {
-  try {
-    const videoId = extractYouTubeID(youtubeUrl);
-    if (!videoId) {
-      console.log("Invalid YouTube URL.");
+    try {
+      const videoId = extractYouTubeID(youtubeUrl);
+      if (!videoId) {
+        console.log("Invalid YouTube URL.");
+        return null;
+      }
+  
+      // Check if transcript is available before fetching
+      const available = await YoutubeTranscript.isTranscriptAvailable(videoId);
+      if (!available) {
+        console.log(`No transcript available for video ID: ${videoId}`);
+        return null;
+      }
+  
+      const transcript = await YoutubeTranscript.fetchTranscript(videoId);
+      const formattedText = transcript.map((entry) => entry.text).join(".\n");
+      return formattedText;
+    } catch (error) {
+      console.error("Error fetching transcript:", error);
       return null;
     }
-
-    const transcript = await YoutubeTranscript.fetchTranscript(videoId);
-    const formattedText = transcript.map((entry) => entry.text).join(".\n");
-    return formattedText;
-  } catch (error) {
-    console.error("Error fetching transcript:", error);
-    return null;
   }
-}
+  
+
 
 // Function to summarize transcript using Google Gemini AI
 export async function summarize(transcriptText) {
