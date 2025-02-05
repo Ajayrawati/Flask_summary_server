@@ -28,12 +28,7 @@ export async function getYouTubeTranscript(youtubeUrl) {
         return null;
       }
   
-      // Check if transcript is available before fetching
-      const available = await YoutubeTranscript.isTranscriptAvailable(videoId);
-      if (!available) {
-        console.log(`No transcript available for video ID: ${videoId}`);
-        return null;
-      }
+      
   
       const transcript = await YoutubeTranscript.fetchTranscript(videoId);
       const formattedText = transcript.map((entry) => entry.text).join(".\n");
